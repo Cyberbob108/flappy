@@ -15,19 +15,20 @@
   const canvas = document.getElementById("gameCanvas");
   const ctx = canvas.getContext("2d");
 
-  // Easier settings
-  const GRAVITY = 0.3;              // Lower gravity
-  const FLAP = -9;                 // Stronger flap
+  // Easy Mode Settings
+  const GRAVITY = 0.3;
+  const FLAP = -9;
   const PIPE_WIDTH = 50;
-  const PIPE_GAP = 250;             // Much larger gap
-  const PIPE_SPEED = 0.6;           // Slower pipe movement
+  const PIPE_GAP = 250;
+  const PIPE_SPEED = 0.8;
   const BIRD_SIZE = 20;
 
-  let birdY = 300;                  // Start lower
+  let birdY = 300;
   let velocity = 0;
   let pipes = [];
   let score = 0;
   let gameOver = false;
+  let gameStarted = false;
 
   function resetGame() {
     birdY = 300;
@@ -35,6 +36,7 @@
     pipes = [];
     score = 0;
     gameOver = false;
+    gameStarted = false;
   }
 
   function drawBird() {
@@ -63,7 +65,7 @@
   }
 
   function updateGame() {
-    if (gameOver) return;
+    if (!gameStarted || gameOver) return;
 
     velocity += GRAVITY;
     birdY += velocity;
@@ -74,7 +76,6 @@
     }
 
     pipes.forEach(pipe => pipe.x -= PIPE_SPEED);
-
     pipes = pipes.filter(pipe => pipe.x + PIPE_WIDTH > 0);
 
     pipes.forEach(pipe => {
@@ -116,6 +117,7 @@
       if (gameOver) {
         resetGame();
       } else {
+        if (!gameStarted) gameStarted = true;
         velocity = FLAP;
       }
     }
@@ -125,6 +127,7 @@
     if (gameOver) {
       resetGame();
     } else {
+      if (!gameStarted) gameStarted = true;
       velocity = FLAP;
     }
   });
