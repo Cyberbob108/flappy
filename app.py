@@ -1,13 +1,11 @@
 import streamlit as st
 import streamlit.components.v1 as components
 
-st.set_page_config(page_title="Flappy Bird on Streamlit", layout="centered")
+st.set_page_config(page_title="Flappy Bird - Easy Mode", layout="centered")
 
-st.title("🐦 Flappy Bird (Streamlit Edition)")
-st.write("Click or press space to flap and avoid the pipes!")
+st.title("🐣 Flappy Bird – Easy Mode")
+st.write("Click or press space to flap. Game starts after your first move!")
 
-# Load HTML + JS game
 with open("flappy.html", "r") as f:
-    game_html = f.read()
-
-components.html(game_html, height=600)
+    html = f.read()
+components.html(html, height=600)
