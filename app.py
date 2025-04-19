@@ -2,8 +2,8 @@ import pygame
 import random
 import time
 import streamlit as st
-import numpy as np
 from pygame.locals import *
+import numpy as np
 
 # Initialize pygame
 pygame.init()
@@ -11,10 +11,6 @@ pygame.init()
 # Screen dimensions
 WIDTH = 400
 HEIGHT = 600
-
-# Set up the game screen
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption('Flappy Bird')
 
 # Colors
 WHITE = (255, 255, 255)
@@ -46,7 +42,6 @@ class Bird:
         self.velocity = bird_velocity
         self.width = bird_width
         self.height = bird_height
-        self.flap_count = 0
 
     def update(self):
         self.velocity += gravity
@@ -55,7 +50,7 @@ class Bird:
     def jump(self):
         self.velocity = jump_strength
 
-    def draw(self):
+    def draw(self, screen):
         pygame.draw.rect(screen, YELLOW, (self.x, self.y, self.width, self.height))  # Bird as a rectangle
 
 # Create Pipe Class
@@ -69,7 +64,7 @@ class Pipe:
     def update(self):
         self.x -= pipe_velocity
 
-    def draw(self):
+    def draw(self, screen):
         pygame.draw.rect(screen, GREEN, (self.x, 0, self.width, self.height))  # Top pipe
         pygame.draw.rect(screen, GREEN, (self.x, self.height + self.gap, self.width, HEIGHT))  # Bottom pipe
 
@@ -85,8 +80,8 @@ def game_loop():
     bird = Bird()
     pipes = [Pipe()]
     clock = pygame.time.Clock()
-
     running = True
+
     while running:
         screen.fill(WHITE)
 
@@ -98,7 +93,7 @@ def game_loop():
                 bird.jump()
 
         bird.update()
-        bird.draw()
+        bird.draw(screen)
 
         # Generate new pipes
         if pipes[-1].x < WIDTH - 300:
@@ -106,7 +101,7 @@ def game_loop():
 
         for pipe in pipes[:]:
             pipe.update()
-            pipe.draw()
+            pipe.draw(screen)
 
             # Remove pipes that have gone off-screen
             if pipe.x < -pipe.width:
@@ -138,8 +133,15 @@ def game_loop():
     time.sleep(3)
 
 # Streamlit Interface
-if __name__ == "__main__":
+def streamlit_interface():
     st.title("Flappy Bird Game")
     st.write("Use the spacebar to make the bird jump and avoid the pipes!")
+
     if st.button("Start Game"):
+        # Run the game in a new pygame window
         game_loop()
+        st.write("Game Over! Press 'Start Game' to play again.")
+
+if __name__ == "__main__":
+    # Run Streamlit app and game interface
+    streamlit_interface()
