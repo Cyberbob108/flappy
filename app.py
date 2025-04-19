@@ -16,26 +16,17 @@ HEIGHT = 600
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('Flappy Bird')
 
-# Load images
-bird_images = [pygame.image.load("bird_flap_1.png"), pygame.image.load("bird_flap_2.png")]
-background = pygame.image.load("background.png")
-pipe_image = pygame.image.load("pipe.png")
-
-# Sounds
-jump_sound = pygame.mixer.Sound("jump.wav")
-score_sound = pygame.mixer.Sound("score.wav")
-gameover_sound = pygame.mixer.Sound("gameover.wav")
-
 # Colors
 WHITE = (255, 255, 255)
 GREEN = (0, 255, 0)
 BLACK = (0, 0, 0)
+YELLOW = (255, 255, 0)
 
 # Game parameters
-bird_x = 50
-bird_y = HEIGHT // 2
 bird_width = 40
 bird_height = 40
+bird_x = 50
+bird_y = HEIGHT // 2
 gravity = 0.5
 bird_velocity = 0
 jump_strength = -10
@@ -65,7 +56,7 @@ class Bird:
         self.velocity = jump_strength
 
     def draw(self):
-        screen.blit(bird_images[0], (self.x, self.y))
+        pygame.draw.rect(screen, YELLOW, (self.x, self.y, self.width, self.height))  # Bird as a rectangle
 
 # Create Pipe Class
 class Pipe:
@@ -79,8 +70,8 @@ class Pipe:
         self.x -= pipe_velocity
 
     def draw(self):
-        pygame.draw.rect(screen, GREEN, (self.x, 0, self.width, self.height))
-        pygame.draw.rect(screen, GREEN, (self.x, self.height + self.gap, self.width, HEIGHT))
+        pygame.draw.rect(screen, GREEN, (self.x, 0, self.width, self.height))  # Top pipe
+        pygame.draw.rect(screen, GREEN, (self.x, self.height + self.gap, self.width, HEIGHT))  # Bottom pipe
 
     def collide(self, bird):
         if bird.x + bird.width > self.x and bird.x < self.x + self.width:
@@ -98,7 +89,6 @@ def game_loop():
     running = True
     while running:
         screen.fill(WHITE)
-        screen.blit(background, (0, 0))
 
         # Event handling
         for event in pygame.event.get():
@@ -124,13 +114,11 @@ def game_loop():
 
             # Check for collision
             if pipe.collide(bird):
-                gameover_sound.play()
                 running = False
 
             # Check for scoring
             if pipe.x + pipe.width < bird.x and not hasattr(pipe, 'scored'):
                 score += 1
-                score_sound.play()
                 pipe.scored = True
 
         # Display score
